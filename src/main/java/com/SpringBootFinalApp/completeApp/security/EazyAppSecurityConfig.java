@@ -22,15 +22,15 @@ public class EazyAppSecurityConfig {
     //     return new InMemoryUserDetailsManager(john);
     // }
 
-    @Bean
-    public JdbcUserDetailsManager jdbcUserDetailsManager(DataSource dataSource)
-    {
-        JdbcUserDetailsManager userDetailsManager = new JdbcUserDetailsManager(dataSource);
-        userDetailsManager.setUsersByUsernameQuery("SELECT email, pwd, 1 as enabled from customer c where email=?");
-        userDetailsManager.setAuthoritiesByUsernameQuery("SELECT email, role from customer where email=?");
-        return userDetailsManager;
-        // return new JdbcUserDetailsManager(dataSource);
-    }
+    // @Bean
+    // public JdbcUserDetailsManager jdbcUserDetailsManager(DataSource dataSource)
+    // {
+    //     JdbcUserDetailsManager userDetailsManager = new JdbcUserDetailsManager(dataSource);
+    //     userDetailsManager.setUsersByUsernameQuery("SELECT email, pwd, 1 as enabled from customer c where email=?");
+    //     userDetailsManager.setAuthoritiesByUsernameQuery("SELECT email, role from customer where email=?");
+    //     return userDetailsManager;
+    //     // return new JdbcUserDetailsManager(dataSource);
+    // }
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
