@@ -37,6 +37,7 @@ public class EazyAppSecurityConfig {
         
         http.authorizeHttpRequests( request ->request
                 .requestMatchers("/myAccount").hasRole("ADMIN")
+                .anyRequest().authenticated()
         );
 
         http.formLogin(Customizer.withDefaults());
