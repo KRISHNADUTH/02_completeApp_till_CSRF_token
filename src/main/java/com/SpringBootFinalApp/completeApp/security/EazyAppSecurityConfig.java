@@ -37,7 +37,6 @@ public class EazyAppSecurityConfig {
         
         http.authorizeHttpRequests( request ->request
                 .requestMatchers("/myAccount").hasRole("ADMIN")
-                .requestMatchers("/contact","/notices").permitAll()
                 .anyRequest().permitAll()
         );
 

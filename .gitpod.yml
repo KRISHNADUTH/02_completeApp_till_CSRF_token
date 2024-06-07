@@ -7,8 +7,10 @@
 tasks:
   - init: ./mvnw install -DskipTests=false
 ports:
-  - port: 8080
-    onOpen: open-browser
+  - port: 8090
+    onOpen: open-preview
+  - port: 9092
+    onOpen: ignore
 
 
 
