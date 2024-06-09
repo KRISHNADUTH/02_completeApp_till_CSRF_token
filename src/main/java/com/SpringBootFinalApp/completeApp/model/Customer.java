@@ -1,14 +1,20 @@
 package com.SpringBootFinalApp.completeApp.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
+import lombok.Data;
 
+import java.util.HashSet;
 import java.util.Set;
 
 import org.hibernate.annotations.GenericGenerator;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 @Entity
+@Data
 public class Customer {
 
     @Id
@@ -32,9 +38,17 @@ public class Customer {
     @Column(name = "create_dt")
     private String createDt;
 
-    @JsonIgnore
-    @OneToMany(mappedBy="customer",fetch=FetchType.EAGER)
-    private Set<Authority> authorities;
+    // @JsonIgnore
+    @JsonManagedReference
+    @OneToMany(mappedBy="customer",fetch=FetchType.EAGER, cascade = CascadeType.ALL)
+    private Set<Authority> authorities= new HashSet<>();
+
+
+    // convinience method for authorities -
+    public void addAuthority(Authority newAuthority) {
+        authorities.add(newAuthority);
+        newAuthority.setCustomer(this);
+    }
 
     public int getId() {
         return id;

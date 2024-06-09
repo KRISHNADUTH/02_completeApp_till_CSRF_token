@@ -3,6 +3,8 @@ package com.SpringBootFinalApp.completeApp.model;
 import jakarta.persistence.*;
 import org.hibernate.annotations.GenericGenerator;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 @Entity
 @Table(name = "authorities")
 public class Authority {
@@ -14,7 +16,8 @@ public class Authority {
 
     private String name;
 
-    @ManyToOne
+    @JsonBackReference
+    @ManyToOne(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
     @JoinColumn(name = "customer_id")
     private Customer customer;
 

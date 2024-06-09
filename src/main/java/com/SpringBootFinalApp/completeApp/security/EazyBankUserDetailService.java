@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import com.SpringBootFinalApp.completeApp.model.Customer;
 import com.SpringBootFinalApp.completeApp.repository.CustomerRepo;
 
+// Here we are taking authorities from Customer table but When we were using CustomAuthentication provider there authorities were taken from Authority table.
 @Service
 public class EazyBankUserDetailService implements UserDetailsService {
     
@@ -25,7 +26,6 @@ public class EazyBankUserDetailService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        System.out.println("Reaching here........");
         List<Customer> customers = customerRepo.findByEmail(username);
         String name, pwd;
         List<GrantedAuthority> authorities= new ArrayList<>();

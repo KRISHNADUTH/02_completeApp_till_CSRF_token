@@ -36,7 +36,9 @@ public class EazyAppSecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         
         http.authorizeHttpRequests( request ->request
-                .requestMatchers("/myAccount").hasRole("ADMIN")
+                // .requestMatchers("/myAccount").hasRole("ADMIN")
+                .requestMatchers("/myAccount").hasAuthority("VIEW_ACCOUNT")
+                .requestMatchers("/myBalance").hasAuthority("VIEW_TRANSACTION")
                 .anyRequest().permitAll()
         );
 
