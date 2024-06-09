@@ -1,15 +1,30 @@
 package com.SpringBootFinalApp.completeApp.security;
 
+import java.util.Collections;
+
 import javax.sql.DataSource;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
+import org.springframework.lang.Nullable;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.JdbcUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
+import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
+import org.springframework.security.web.csrf.CsrfTokenRepository;
+import org.springframework.security.web.csrf.CsrfTokenRequestAttributeHandler;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+
+import com.SpringBootFinalApp.completeApp.filter.CsrfTokenFilter;
+
+import jakarta.servlet.http.HttpServletRequest;
 
 @Configuration
 public class EazyAppSecurityConfig {
@@ -35,18 +50,44 @@ public class EazyAppSecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         
+        CsrfTokenRequestAttributeHandler requestHandler = new CsrfTokenRequestAttributeHandler();
+
+
+        http.cors(cors ->{
+            cors.configurationSource(new CorsConfigurationSource() {
+
+                @Override
+                public CorsConfiguration getCorsConfiguration(HttpServletRequest arg0) {
+                    CorsConfiguration config = new CorsConfiguration();
+                    config.setAllowCredentials(true);
+                    config.setAllowedMethods(Collections.singletonList("*"));
+                    config.setAllowedHeaders(Collections.singletonList("*"));
+                    config.setAllowedOrigins(Collections.singletonList("*"));
+                    config.setMaxAge(3600L);
+                    return config;
+                }
+            });
+        });
+        
+        // http.csrf(csrf -> csrf.disable());
+        http.securityContext(context -> context.requireExplicitSave(false))
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.ALWAYS));
+        http.csrf(csrf -> csrf.csrfTokenRequestHandler(requestHandler)
+                .ignoringRequestMatchers("/customer","/contact")
+                .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
+        ).addFilterAfter(new CsrfTokenFilter(), BasicAuthenticationFilter.class);   
+
         http.authorizeHttpRequests( request ->request
                 // .requestMatchers("/myAccount").hasRole("ADMIN")
                 .requestMatchers("/myAccount").hasAuthority("VIEW_ACCOUNT")
                 .requestMatchers("/myBalance").hasAuthority("VIEW_TRANSACTION")
+                .requestMatchers("/notices").hasAuthority("UPDATE_NOTICES")
                 .anyRequest().permitAll()
         );
-
-        http.csrf(csrf -> csrf.disable());
-
+        
         http.formLogin(Customizer.withDefaults());
         http.httpBasic(Customizer.withDefaults());
-        
+
         return http.build();
     }
 

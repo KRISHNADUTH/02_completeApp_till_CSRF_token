@@ -3,9 +3,12 @@ package com.SpringBootFinalApp.completeApp.model;
 import java.sql.Date;
 
 import jakarta.persistence.*;
+import lombok.Data;
+
 import org.hibernate.annotations.GenericGenerator;
 
 @Entity
+@Data
 @Table(name = "notice_details")
 public class Notice {
 

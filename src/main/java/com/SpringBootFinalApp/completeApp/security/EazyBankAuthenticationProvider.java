@@ -41,19 +41,20 @@ public class EazyBankAuthenticationProvider implements AuthenticationProvider{
             throw new BadCredentialsException("No users with given credentials!");
         } 
         else {
-            Customer customer = customerRepo.findByEmail(userName).get(0);
-            String storedPassword = customer.getPwd();
-            List<Authority> authorities = authorityRepo.findByCustomerId(customer.getId());
-            // Here we are taking authorities from Authority table
-            List<GrantedAuthority> grantedAuthorities = new ArrayList<>();
-            for (Authority authority : authorities) {
-                grantedAuthorities.add(new SimpleGrantedAuthority(authority.getName()));
-            }
-            if (passwordEncoder.matches(password, storedPassword)) {
-                return new UsernamePasswordAuthenticationToken(userName, storedPassword, grantedAuthorities);
-            } else {
-                throw new BadCredentialsException("Wrong password");
-            }
+                Customer customer = customerRepo.findByEmail(userName).get(0);
+                String storedPassword = customer.getPwd();
+                List<Authority> authorities = authorityRepo.findByCustomerId(customer.getId());
+                // Here we are taking authorities from Authority table
+                List<GrantedAuthority> grantedAuthorities = new ArrayList<>();
+                for (Authority authority : authorities) {
+                    grantedAuthorities.add(new SimpleGrantedAuthority(authority.getName()));
+                }
+                if (passwordEncoder.matches(password, storedPassword)) {
+                    System.out.println("Password matched in EazyBankAuthenticationProvider............");
+                    return new UsernamePasswordAuthenticationToken(userName, storedPassword, grantedAuthorities);
+                } else {
+                    throw new BadCredentialsException("Wrong password");
+                }
         }
     }
 
